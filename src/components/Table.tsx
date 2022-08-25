@@ -56,13 +56,29 @@ const Table = ({ clients, selectClient, removeClient }: TableProps) => {
             <td className="text-left px-5 py-2 text-xl">{name}</td>
             <td className="text-left px-5 py-2 text-xl">{age}</td>
             <td className="flex justify-center items-center px-5 py-2 text-xl">
-              {renderButton(() => selectClient(client), <EditIcon />, "blue")}
-              {renderButton(() => removeClient(client), <TrashIcon />, "red")}
+              <button
+                onClick={() => selectClient(client)}
+                className={`
+                  mx-1 p-1 rounded-full 
+                  text-blue-600 hover:bg-blue-600 hover:text-white
+                `}
+              >
+                <EditIcon />
+              </button>
+              <button
+                onClick={() => removeClient(client)}
+                className={`
+                  mx-1 p-1 rounded-full 
+                  text-red-600 hover:bg-red-600 hover:text-white
+                `}
+              >
+                <TrashIcon />
+              </button>
             </td>
           </tr>
         );
       }),
-    [clients, removeClient, renderButton, selectClient]
+    [clients, removeClient, selectClient]
   );
 
   return (

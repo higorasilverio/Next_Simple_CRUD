@@ -1,4 +1,7 @@
 import { useCallback } from "react";
+import Button from "../components/Button";
+import Form from "../components/Form";
+import NewIcon from "../components/icons/NewIcon";
 import Layout from "../components/Layout";
 import Table from "../components/Table";
 import Client from "../core/Client";
@@ -27,11 +30,17 @@ export default function Home() {
     `}
     >
       <Layout title="Simple Register Form">
+        <div className="flex justify-end mb-2">
+          <Button>
+            New <NewIcon />
+          </Button>
+        </div>
         <Table
           clients={clientsArray}
           selectClient={selectClient}
           removeClient={removeClient}
         />
+        <Form />
       </Layout>
     </div>
   );
