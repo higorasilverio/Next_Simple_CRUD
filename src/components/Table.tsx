@@ -22,27 +22,6 @@ const Table = ({ clients, selectClient, removeClient }: TableProps) => {
     []
   );
 
-  const renderButton = useCallback(
-    (
-      action: MouseEventHandler<HTMLButtonElement>,
-      icon: ReactNode,
-      color: string
-    ) => {
-      return (
-        <button
-          onClick={action}
-          className={`
-            mx-1 p-1 rounded-full 
-            text-${color}-600 hover:bg-${color}-600 hover:text-white
-          `}
-        >
-          {icon}
-        </button>
-      );
-    },
-    []
-  );
-
   const renderData = useCallback(
     () =>
       clients?.map((client, index) => {

@@ -1,26 +1,35 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import Button from "../components/Button";
 import Form from "../components/Form";
 import NewIcon from "../components/icons/NewIcon";
 import Layout from "../components/Layout";
+import Loading from "../components/Loading";
 import Table from "../components/Table";
 import Client from "../core/Client";
-
-const CLIENTS_ARRAY = [
-  new Client("Higor", 29, "0"),
-  new Client("Priscila", 29, "1"),
-  new Client("Thor", 3, "2"),
-  new Client("Loki", 1, "3"),
-];
+import { ClientsCollection } from "../firebase/db/ClientsCollection";
 
 export default function Home() {
+  const [loading, setLoading] = useState<boolean>(true);
   const [visible, setVisible] = useState<"table" | "form">("table");
   const [client, setClient] = useState<Client>(null);
   const [clients, setClients] = useState<Client[]>([]);
 
+  const collection = useMemo(() => new ClientsCollection(), []);
+
+  const getAll = useCallback(async () => {
+    await collection
+      .findAll()
+      .then((response) => setClients(response))
+      .catch((error) => console.log(error))
+      .finally(() => {
+        setVisible("table");
+        setLoading(false);
+      });
+  }, [collection]);
+
   useEffect(() => {
-    setClients(CLIENTS_ARRAY);
-  }, []);
+    getAll();
+  }, [getAll]);
 
   const selectClient = useCallback((client: Client) => {
     setClient(client);
@@ -28,14 +37,11 @@ export default function Home() {
   }, []);
 
   const removeClient = useCallback(
-    (_client: Client) => {
-      const newClients = clients.filter(
-        (currentClient) => currentClient.id !== _client.id
-      );
-
-      setClients(newClients);
+    async (_client: Client) => {
+      setLoading(true);
+      await collection.delete(_client).then(getAll);
     },
-    [clients]
+    [collection, getAll]
   );
 
   const handleNewClient = useCallback(() => {
@@ -43,48 +49,16 @@ export default function Home() {
     setVisible("form");
   }, []);
 
-  const handleRegisterCancel = useCallback(() => {
-    setVisible("table");
-  }, []);
-
-  const getNewId = useCallback(() => {
-    const lastId = clients[clients.length - 1].id;
-    let idNumber = parseInt(lastId, 10) + 1;
-    let existingId = clients.findIndex(
-      (_client) => _client.id === idNumber.toString()
-    );
-    while (existingId >= 0) {
-      idNumber++;
-      existingId = clients.findIndex(
-        (_client) => _client.id === idNumber.toString()
-      );
-    }
-
-    return idNumber.toString();
-  }, [clients]);
-
   const handleRegisterSave = useCallback(
-    (_client: Client) => {
-      const { name: _name, age: _age, id: _id } = _client;
+    async (_client: Client) => {
+      setLoading(true);
+      const { name, age, id } = _client;
 
-      if (_id) {
-        const index = clients.findIndex((clnt) => clnt.id === _id);
-        const newClients = clients.map((clnt, i) =>
-          i !== index ? clnt : _client
-        );
-
-        setClients(newClients);
-      } else {
-        const id = getNewId();
-        const newClientsArray = clients.concat([
-          new Client(_client.name, _client.age, id),
-        ]);
-
-        setClients(newClientsArray);
-      }
-      setVisible("table");
+      id
+        ? await collection.update(_client).then(getAll)
+        : await collection.save(new Client(name, age)).then(getAll);
     },
-    [clients, getNewId]
+    [collection, getAll]
   );
 
   return (
@@ -95,7 +69,8 @@ export default function Home() {
     `}
     >
       <Layout title="Simple Register Form">
-        {visible === "table" ? (
+        {loading && <Loading />}
+        {!loading && visible === "table" && (
           <>
             <div className="flex justify-end mb-2">
               <Button onClick={handleNewClient}>
@@ -108,10 +83,11 @@ export default function Home() {
               removeClient={removeClient}
             />
           </>
-        ) : (
+        )}
+        {!loading && visible === "form" && (
           <Form
             client={client}
-            handleRegisterCancel={handleRegisterCancel}
+            handleRegisterCancel={() => setVisible("table")}
             handleRegisterSave={handleRegisterSave}
           />
         )}
