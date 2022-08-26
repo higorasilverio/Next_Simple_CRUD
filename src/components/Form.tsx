@@ -3,15 +3,19 @@ import Client from "../core/Client";
 import Button from "./Button";
 import FormInput from "./FormInput";
 import CancelIcon from "./icons/CancelIcon";
-import EditIcon from "./icons/EditIcon";
 import SaveIcon from "./icons/SaveIcon";
-import TrashIcon from "./icons/TrashIcon";
 
 type FormProps = {
   client?: Client;
+  handleRegisterCancel: () => void;
+  handleRegisterSave: (client: Client) => void;
 };
 
-const Form = ({ client }: FormProps) => {
+const Form = ({
+  client,
+  handleRegisterCancel,
+  handleRegisterSave,
+}: FormProps) => {
   const [name, setName] = useState<string>(client?.name ?? "");
   const [age, setAge] = useState<number>(client?.age ?? 0);
   const [id] = useState<string>(client?.id ?? "");
@@ -32,22 +36,22 @@ const Form = ({ client }: FormProps) => {
             text="Name"
             value={name}
             type="text"
-            onChange={setName}
+            onChange={(e) => setName(e.target.value)}
           />
           <FormInput
             className="w-1/5"
             text="Age"
             value={age}
             type="number"
-            onChange={setAge}
+            onChange={(e) => setAge(e.target.value)}
           />
         </div>
       </div>
       <div className="flex justify-end mt-5">
-        <Button>
+        <Button onClick={() => handleRegisterSave(new Client(name, age, id))}>
           {id ? "Update" : "Save"} <SaveIcon />
         </Button>
-        <Button>
+        <Button onClick={handleRegisterCancel}>
           Cancel <CancelIcon />
         </Button>
       </div>
