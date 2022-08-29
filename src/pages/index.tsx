@@ -58,6 +58,7 @@ export default function Home() {
   const handleRegisterSave = useCallback(
     async (_client: Client) => {
       startLoading();
+
       const { name, age, id } = _client;
 
       id

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Client from "../core/Client";
 import Button from "./Button";
 import FormInput from "./FormInput";
@@ -23,13 +23,15 @@ const Form = ({
   return (
     <>
       <div className="w-full">
-        <FormInput
-          className="w-full sm:w-1/3"
-          text="ID"
-          value={id}
-          type="text"
-          readonly
-        />
+        {id && (
+          <FormInput
+            className="w-full sm:w-1/3"
+            text="ID"
+            value={id}
+            type="text"
+            readonly
+          />
+        )}
         <div className="w-full sm:flex sm:gap-4">
           <FormInput
             className="w-full sm:w-4/5"
@@ -48,7 +50,10 @@ const Form = ({
         </div>
       </div>
       <div className="flex flex-col gap-1 sm:gap-0 sm:flex-row sm:justify-end mt-5">
-        <Button onClick={() => handleRegisterSave(new Client(name, age, id))}>
+        <Button
+          onClick={() => handleRegisterSave(new Client(name, age, id))}
+          readonly={!name || !age}
+        >
           {id ? "Update" : "Save"} <SaveIcon className="ml-2" />
         </Button>
         <Button onClick={handleRegisterCancel}>
