@@ -10,7 +10,7 @@ const Button = ({ children, onClick }: ButtonProps) => {
     <button
       onClick={onClick}
       className={`
-        flex justify-evenly items-center w-32 ml-2 border font-semibold
+        flex justify-center items-center w-full sm:w-32 md:ml-2 border font-semibold
         bg-slate-900 text-white px-4 py-2 rounded-md 
         hover:bg-slate-200 hover:text-slate-900 hover:border-slate-900
       `}

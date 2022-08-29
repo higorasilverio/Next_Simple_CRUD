@@ -17,7 +17,7 @@ const FormInput = ({
 }: FormInputProps) => {
   return (
     <div className={`flex flex-col ${className}`}>
-      <label className="mb-2 mt-4">{text}</label>
+      <label className="mb-1 mt-2 sm:mt-4">{text}</label>
       <input
         type={type ?? "text"}
         value={value}

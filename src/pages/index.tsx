@@ -78,9 +78,9 @@ export default function Home() {
         {loading && <Loading />}
         {!loading && tableVisible && (
           <>
-            <div className="flex justify-end mb-2">
+            <div className="flex sm:justify-end mb-2 w-full">
               <Button onClick={handleNewClient}>
-                New <NewIcon />
+                New <NewIcon className="ml-2" />
               </Button>
             </div>
             <Table

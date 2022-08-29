@@ -1,4 +1,4 @@
-import { MouseEventHandler, ReactNode, useCallback } from "react";
+import { useCallback } from "react";
 import Client from "../core/Client";
 import EditIcon from "./icons/EditIcon";
 import TrashIcon from "./icons/TrashIcon";
@@ -13,10 +13,12 @@ const Table = ({ clients, selectClient, removeClient }: TableProps) => {
   const renderTableHeader = useCallback(
     () => (
       <tr>
-        <th className="text-left px-5 py-2 text-xl">Code</th>
-        <th className="text-left px-5 py-2 text-xl">Name</th>
-        <th className="text-left px-5 py-2 text-xl">Age</th>
-        <th className="px-5 py-2 text-xl">Actions</th>
+        <th className="hidden md:block text-left px-2 sm:px-4 py-2 text-md sm:text-xl">
+          Code
+        </th>
+        <th className="text-left px-2 sm:px-4 py-2 text-md sm:text-xl">Name</th>
+        <th className="text-left px-2 sm:px-4 py-2 text-md sm:text-xl">Age</th>
+        <th className="px-2 sm:px-4 py-2 text-md sm:text-xl">Actions</th>
       </tr>
     ),
     []
@@ -31,14 +33,20 @@ const Table = ({ clients, selectClient, removeClient }: TableProps) => {
             key={`table-client-${id}`}
             className={`${index % 2 === 0 ? "bg-slate-200" : "bg-slate-300"}`}
           >
-            <td className="text-left px-5 py-2 text-xl">{id}</td>
-            <td className="text-left px-5 py-2 text-xl">{name}</td>
-            <td className="text-left px-5 py-2 text-xl">{age}</td>
-            <td className="flex justify-center items-center px-5 py-2 text-xl">
+            <td className="hidden md:block text-left px-2 sm:px-4 py-2 text-sm">
+              <code>{id}</code>
+            </td>
+            <td className="text-left px-2 sm:px-4 py-2 text-md sm:text-xl">
+              {name}
+            </td>
+            <td className="text-left px-2 sm:px-4 py-2 text-md sm:text-xl">
+              {age}
+            </td>
+            <td className="flex justify-center items-center px-2 sm:px-4 py-2 text-md sm:text-xl">
               <button
                 onClick={() => selectClient(client)}
                 className={`
-                  mx-1 p-1 rounded-full 
+                  mx-0.5 p-1 rounded-full 
                   text-blue-600 hover:bg-blue-600 hover:text-white
                 `}
               >
@@ -47,7 +55,7 @@ const Table = ({ clients, selectClient, removeClient }: TableProps) => {
               <button
                 onClick={() => removeClient(client)}
                 className={`
-                  mx-1 p-1 rounded-full 
+                  mx-0.5 p-1 rounded-full 
                   text-red-600 hover:bg-red-600 hover:text-white
                 `}
               >

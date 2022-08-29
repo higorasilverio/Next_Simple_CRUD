@@ -24,22 +24,22 @@ const Form = ({
     <>
       <div className="w-full">
         <FormInput
-          className="w-1/3"
+          className="w-full sm:w-1/3"
           text="ID"
           value={id}
           type="text"
           readonly
         />
-        <div className="flex gap-4">
+        <div className="w-full sm:flex sm:gap-4">
           <FormInput
-            className="w-4/5"
+            className="w-full sm:w-4/5"
             text="Name"
             value={name}
             type="text"
             onChange={(e) => setName(e.target.value)}
           />
           <FormInput
-            className="w-1/5"
+            className="w-full sm:w-1/5"
             text="Age"
             value={age}
             type="number"
@@ -47,12 +47,12 @@ const Form = ({
           />
         </div>
       </div>
-      <div className="flex justify-end mt-5">
+      <div className="flex flex-col gap-1 sm:gap-0 sm:flex-row sm:justify-end mt-5">
         <Button onClick={() => handleRegisterSave(new Client(name, age, id))}>
-          {id ? "Update" : "Save"} <SaveIcon />
+          {id ? "Update" : "Save"} <SaveIcon className="ml-2" />
         </Button>
         <Button onClick={handleRegisterCancel}>
-          Cancel <CancelIcon />
+          Cancel <CancelIcon className="ml-2" />
         </Button>
       </div>
     </>
