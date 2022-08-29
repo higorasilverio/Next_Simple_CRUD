@@ -7,10 +7,12 @@ import Loading from "../components/Loading";
 import Table from "../components/Table";
 import Client from "../core/Client";
 import { ClientsCollection } from "../firebase/db/ClientsCollection";
+import { useVisibility } from "../hooks/useVisibility";
 
 export default function Home() {
+  const { showTable, showForm, tableVisible, formVisible } = useVisibility();
+
   const [loading, setLoading] = useState<boolean>(true);
-  const [visible, setVisible] = useState<"table" | "form">("table");
   const [client, setClient] = useState<Client>(null);
   const [clients, setClients] = useState<Client[]>([]);
 
@@ -22,19 +24,22 @@ export default function Home() {
       .then((response) => setClients(response))
       .catch((error) => console.log(error))
       .finally(() => {
-        setVisible("table");
+        showTable();
         setLoading(false);
       });
-  }, [collection]);
+  }, [collection, showTable]);
 
   useEffect(() => {
     getAll();
   }, [getAll]);
 
-  const selectClient = useCallback((client: Client) => {
-    setClient(client);
-    setVisible("form");
-  }, []);
+  const selectClient = useCallback(
+    (client: Client) => {
+      setClient(client);
+      showForm();
+    },
+    [showForm]
+  );
 
   const removeClient = useCallback(
     async (_client: Client) => {
@@ -46,8 +51,8 @@ export default function Home() {
 
   const handleNewClient = useCallback(() => {
     setClient(Client.emptyClient());
-    setVisible("form");
-  }, []);
+    showForm();
+  }, [showForm]);
 
   const handleRegisterSave = useCallback(
     async (_client: Client) => {
@@ -70,7 +75,7 @@ export default function Home() {
     >
       <Layout title="Simple Register Form">
         {loading && <Loading />}
-        {!loading && visible === "table" && (
+        {!loading && tableVisible && (
           <>
             <div className="flex justify-end mb-2">
               <Button onClick={handleNewClient}>
@@ -84,10 +89,10 @@ export default function Home() {
             />
           </>
         )}
-        {!loading && visible === "form" && (
+        {!loading && formVisible && (
           <Form
             client={client}
-            handleRegisterCancel={() => setVisible("table")}
+            handleRegisterCancel={showTable}
             handleRegisterSave={handleRegisterSave}
           />
         )}
