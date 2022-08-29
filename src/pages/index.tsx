@@ -7,12 +7,13 @@ import Loading from "../components/Loading";
 import Table from "../components/Table";
 import Client from "../core/Client";
 import { ClientsCollection } from "../firebase/db/ClientsCollection";
+import { useLoading } from "../hooks/useLoading";
 import { useVisibility } from "../hooks/useVisibility";
 
 export default function Home() {
   const { showTable, showForm, tableVisible, formVisible } = useVisibility();
+  const { loading, stopLoading, startLoading } = useLoading();
 
-  const [loading, setLoading] = useState<boolean>(true);
   const [client, setClient] = useState<Client>(null);
   const [clients, setClients] = useState<Client[]>([]);
 
@@ -25,9 +26,9 @@ export default function Home() {
       .catch((error) => console.log(error))
       .finally(() => {
         showTable();
-        setLoading(false);
+        stopLoading();
       });
-  }, [collection, showTable]);
+  }, [collection, showTable, stopLoading]);
 
   useEffect(() => {
     getAll();
@@ -43,10 +44,10 @@ export default function Home() {
 
   const removeClient = useCallback(
     async (_client: Client) => {
-      setLoading(true);
+      startLoading();
       await collection.delete(_client).then(getAll);
     },
-    [collection, getAll]
+    [collection, getAll, startLoading]
   );
 
   const handleNewClient = useCallback(() => {
@@ -56,14 +57,14 @@ export default function Home() {
 
   const handleRegisterSave = useCallback(
     async (_client: Client) => {
-      setLoading(true);
+      startLoading();
       const { name, age, id } = _client;
 
       id
         ? await collection.update(_client).then(getAll)
         : await collection.save(new Client(name, age)).then(getAll);
     },
-    [collection, getAll]
+    [collection, getAll, startLoading]
   );
 
   return (
